@@ -387,7 +387,7 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-    A[Start Auth Flow] --> AA[Get authority]
+    A[Start Authorization Flow] --> AA[Get authority]
     AA-->B{Check Metadata Discovery}
     B -->|Available| C[Use Metadata Endpoints]
     B -->|Not Available| D[Use Default Endpoints]
