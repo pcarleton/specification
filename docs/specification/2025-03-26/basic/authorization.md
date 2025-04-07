@@ -135,7 +135,7 @@ sequenceDiagram
     MC->>MC: Construct OIDC /authorize endpoint from issuer identifier
     Note over MC: Generate code_verifier and code_challenge,<br/>and request with scope and resource
     MC-->>UA: Open /authorize
-    Note over UA: User authenticates to the IDP
+    UA-->>IDP: User authenticates
     UA->>MC: Return auth code to client
     MC->>IDP: Exchange auth code for tokens
     IDP-->>MC: Return tokens
