@@ -227,7 +227,7 @@ sequenceDiagram
 
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
-    MC->>MC: Construct metadata endpoint from issuer identifier
+    Note over MC: MCP Client retrieves /authorize endpoint URI from the issuer metadata document (Section 2.3)
     MC-->>UA: Initiate authentication at /authorize
     Note over UA: User authorizes with scope and resource
     UA->>MC: Return auth code to client
