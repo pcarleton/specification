@@ -114,7 +114,7 @@ An MCP client **MUST** check the `resource` identifier against the hostname of t
 client **MUST** send the `resource` identifier to the OAuth Provider, following 
 [RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
-An MCP client **MUST** implement Demonstrating Proof of Possession (DPoP) and use it to the extent 
+An MCP client **SHOULD** implement Demonstrating Proof of Possession (DPoP) and use it to the extent 
 supported by the OAuth Provider. See 
 [RFC9449](https://datatracker.ietf.org/doc/html/rfc9449).
 
@@ -192,10 +192,6 @@ For example: `MCP-Protocol-Version: 2024-11-05`
 ### 2.4 Identity provider integration
 
 #### 2.4.1 Overview
-
-MCP servers **SHOULD** support delegated authorization through third-party authorization servers 
-instead of implementing their own OAuth provider. In this flow, the MCP server acts as the proxy for 
-the identity provider.
 
 MCP servers **MAY** override endpoints on an as-needed basis if the identity provider requires 
 additional gestures that are not captured by the specification.
@@ -428,7 +424,8 @@ MCP client **MUST** use the Authorization request header field
 Authorization: Bearer <access-token>
 ```
 
-or DPoP Section 7.1
+or
+[DPoP Section 7.1](https://datatracker.ietf.org/doc/html/rfc9449#name-the-dpop-authentication-sch):
 
 ```
 Authorization: DPoP <access-token>
@@ -503,3 +500,9 @@ to provide endpoints manually or clients to fallback to the defined defaults.
 Since clients do not know the set of MCP servers in advance, we strongly recommend the implementation
 of dynamic client registration. This allows applications to automatically register with the MCP 
 server, and removes the need for users to obtain client IDs manually.
+
+#### 3.4 Using delegated authorization
+
+MCP servers **SHOULD** support delegated authorization through third-party authorization servers 
+instead of implementing their own OAuth provider. MCP server **MAY** act as the proxy for 
+the identity provider.
