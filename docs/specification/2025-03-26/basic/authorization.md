@@ -420,14 +420,14 @@ requests. Specifically:
 MCP client **MUST** use the Authorization request header field
 [OAuth Section 5.1.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.1.1):
 
-```
+```http
 Authorization: Bearer <access-token>
 ```
 
 or
 [DPoP Section 7.1](https://datatracker.ietf.org/doc/html/rfc9449#name-the-dpop-authentication-sch):
 
-```
+```http
 Authorization: DPoP <access-token>
 DPoP: <DPoP proof>
 ```
@@ -437,7 +437,7 @@ are part of the same logical session.
 
 Access tokens **MUST NOT** be included in the URI query string. Example request:
 
-```
+```http
 GET /v1/contexts HTTP/1.1
 Host: mcp.example.com
 Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
@@ -456,10 +456,10 @@ handling requirements. Invalid or expired tokens **MUST** receive a `HTTP 401` r
 The following security requirements **MUST** be implemented:
 
 1. Clients **MUST** securely store tokens following OAuth 2.0 best practices.  
-1. Servers **SHOULD** enforce token expiration and rotation.  
+1. Servers **MUST** validate all incoming tokens.
 1. All authorization endpoints **MUST** be served over HTTPS.  
 1. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
-1. Redirect URIs **MUST** be either localhost URLs or HTTPS URLs.  
+1. Redirect URIs **MUST** be either `localhost` URLs or HTTPS URLs.  
 1. Special considerations **MUST** be accounted for to prevent phishing through MCP servers.
 
 ### 2.10 Error Handling
