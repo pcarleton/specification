@@ -22,10 +22,9 @@ This document **does not discuss server-to-server authorization patterns**.
 
 ### 1.2 Baseline tenets
 
-1. **MCP server developers are not security experts – do not make them do that work**. The current
-   specification assumes that developers will be building their own authorization server. That is not
-   something they ever need to do in the context of MCP servers. This also introduces room for serious
-   mistakes that can lead to compromise.
+1. **MCP server developers are not security experts**. The current specification assumes that developers
+   will be building their own authorization server. That is not something they ever need to do in the
+   context of MCP servers. This also introduces room for serious mistakes that can lead to compromise.
 1. **MCP clients are identity provider (IdP)-agnostic**. We do not and will not expect clients to be
    "enlightened" in any capacity to support a protected MCP server. This will fragment the ecosystem.
    The specification explicitly assumes that clients are not enabled in any unique way to support
