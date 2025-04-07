@@ -346,7 +346,7 @@ sequenceDiagram
 
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
-    MC->>MC: Construct OIDC path
+    MC->>MC: Construct metadata document path
 
     alt Supports identity provider
         MC->>IDP: GET /.well-known/oauth-authorization-server
