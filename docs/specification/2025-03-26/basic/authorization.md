@@ -242,14 +242,15 @@ MCP servers integrating with third-party authorization services **MUST**:
 1. Maintain secure mapping between third-party tokens and issued client sessions.  
 2. Validate third-party token status before honoring MCP tokens.  
 3. Implement appropriate token lifecycle management.  
-4. Provide appropriate responses to the client if re-authentication is needed.
+4. Provide appropriate responses to the client if re-authentication is needed. Please refer to
+   [RFC 9470 OAuth 2.0 Step Up Authentication Challenge Protocol](https://www.rfc-editor.org/rfc/rfc9470.html).
 
 #### 2.4.4 Security Considerations
 
 When implementing authorization with identity providers, MCP servers **MUST**:
 
 1. Request the minimum number of required scopes.  
-2. Securely store third-party credentials.  
+2. Securely store any credential artifacts obtained from the client and/or the IdP.  
 3. Implement appropriate session timeout handling.  
 4. Consider security implications of token chaining.  
 5. Implement proper error handling for third-party auth failures.
