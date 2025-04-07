@@ -84,7 +84,7 @@ Providers (IdPs).
    Server Metadata ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)). Servers that do not
    support Authorization Server Metadata **MUST** follow the default URI schema.
 
-### 2.2 Basic OAuth 2.1 Authorization
+### 2.2 Client OAuth 2.1 Authorization
 
 When authorization is required and not yet proven by the client, servers **MUST** respond with
 *HTTP 401 Unauthorized*.
