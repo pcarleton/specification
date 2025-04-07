@@ -335,7 +335,7 @@ to the MCP client through a UI.
 
 ### 2.7 Authorization Flow Steps
 
-The complete Authorization flow proceeds as follows:  
+The complete authorization flow proceeds as follows:  
 
 ```mermaid
 sequenceDiagram
