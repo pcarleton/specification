@@ -238,7 +238,7 @@ sequenceDiagram
 
 #### 2.4.3 Session Binding Requirements
 
-MCP servers implementing third-party authorization **MUST**:
+MCP servers integrating with third-party authorization services **MUST**:
 
 1. Maintain secure mapping between third-party tokens and issued client sessions.  
 2. Validate third-party token status before honoring MCP tokens.  
