@@ -374,7 +374,7 @@ sequenceDiagram
     end
 
     Note over MC: Generate PKCE artifacts
-    MC-->>UA: Open /authorize
+    MC-->>UA: Initiate authorization call
     Note over UA: User enters their credentials
     UA->>MC: Return auth code to client
     MC->>IDP: Exchange auth code for tokens
