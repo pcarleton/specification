@@ -124,7 +124,25 @@ flow after receiving the *HTTP 401 Unauthorized*.
 
 The following demonstrates the OAuth 2.1 flow for public clients using PKCE.
 
-<!-- INSERT MISSING IMAGE -->
+```mermaid
+sequenceDiagram
+    participant UA as User-Agent (Browser or App/Broker)
+    participant MC as MCP Client
+    participant MS as MCP Server
+    participant IDP as Identity Provider
+
+    MC->>MS: MCP Request
+    MS-->>MC: 401 Unauthorized with issuer, scope, and resource in WWW-Authenticate
+    MC->>MC: Construct OIDC /authorize endpoint from issuer identifier
+    Note over MC: Generate code_verifier and code_challenge,<br/>and request with scope and resource
+    MC-->>UA: Open /authorize
+    Note over UA: User authenticates to the IDP
+    UA->>MC: Return auth code to client
+    MC->>IDP: Exchange auth code for tokens
+    IDP-->>MC: Return tokens
+    MC->>MC: Cache tokens
+    Note over MC, MS: Begin standard MCP message exchange
+```
 
 ### 2.3 Server Metadata Discovery
 
@@ -151,7 +169,18 @@ For server capability discovery:
 
 The discovery flow is illustrated below:  
 
-<!-- INSERT MISSING IMAGE -->
+```mermaid
+sequenceDiagram
+    participant MC as MCP Client
+    participant MS as MCP Server
+    participant IDP as Identity Provider
+
+    MC->>MS: Request data
+    MS-->>MC: 401 Unauthorized with WWW-Authenticate
+    MC->>MC: Construct metadata endpoint from issuer identifier
+
+    Note over MC: Continue with authorization flow
+```
 
 #### 2.3.1 Server Metadata Discovery Headers
 
@@ -193,7 +222,23 @@ The third-party authorization flow comprises these steps:
 1. MCP clients can now request data from the MCP server with the token attached in the `Authorization` 
    header.
 
-<!-- INSERT MISSING IMAGE -->
+```mermaid
+sequenceDiagram
+    participant UA as User-Agent (Browser)
+    participant MC as MCP Client
+    participant MS as MCP Server
+    participant IDP as Third-Party Auth Server
+
+    MC->>MS: Request data
+    MS-->>MC: 401 Unauthorized with WWW-Authenticate
+    MC->>MC: Construct metadata endpoint from issuer identifier
+    MC-->>UA: Initiate authentication at /authorize
+    Note over UA: User authorizes with scope and resource
+    UA->>MC: Return auth code to client
+    MC->>IDP: Exchange code for token
+    IDP-->>MC: Third-party access token
+    MC->>MC: Cache token
+```
 
 #### 2.4.3 Session Binding Requirements
 
@@ -245,11 +290,11 @@ For servers that do not implement OAuth 2.0 Authorization Server Metadata, clien
 following default endpoint paths relative to the authorization base URL (as defined in 
 [Section 2.5.1](#251-discovery-of-server-driven-overrides):
 
-| Endpoint | Default Path | Description |
-| ----- | ----- | ----- |
-| Authorization Endpoint | `/authorize` | Used for authorization requests |
-| Token Endpoint | `/token` | Used for token exchange & refresh |
-| Registration Endpoint | `/register` | Used for dynamic client registration |
+| Endpoint               | Default Path   | Description                          |
+| ---------------------- | -------------- | ------------------------------------ |
+| Authorization Endpoint | `/authorize`   | Used for authorization requests      |
+| Token Endpoint         | `/token`       | Used for token exchange & refresh    |
+| Registration Endpoint  | `/register`    | Used for dynamic client registration |
 
 For example, with an MCP server hosted at `https://api.example.com/v1/mcp`, the default endpoints 
 would be:
@@ -282,10 +327,12 @@ MCP clients with mass audiences will *generally* want to pre-register and hardco
 OAuth Providers (such as Google and Microsoft) limit the functionality of dynamically registered 
 clients. An MCP client could contain a config for common issuers like:
 
-`[`  
-  `{ "issuer":"https://idp.example", "client_id":"12345"},`  
-  `{ "issuer":"https://idp2.example", "client_id":"urn:client_ids:546"}`  
-`]`
+```json
+[
+  { "issuer":"https://idp.example", "client_id":"12345"},
+  { "issuer":"https://idp2.example", "client_id":"urn:client_ids:546"}
+]
+```
 
 Alternatively, an MCP client could allow the user to register the MCP client and provide those details 
 to the MCP client through a UI.
@@ -294,11 +341,76 @@ to the MCP client through a UI.
 
 The complete Authorization flow proceeds as follows:  
 
-<!-- INSERT MISSING IMAGE -->
+```mermaid
+sequenceDiagram
+    participant UA as User-Agent (Browser or App/Broker)
+    participant MC as MCP Client
+    participant MS as MCP Server
+    participant IDP as Identity Provider
+
+    MC->>MS: Request data
+    MS-->>MC: 401 Unauthorized with WWW-Authenticate
+    MC->>MC: Construct OIDC path
+
+    alt Supports identity provider
+        MC->>IDP: GET /.well-known/oauth-authorization-server
+        IDP-->>MC: Return endpoint metadata
+    else Partial or No IDP Support
+        MC->>MS: GET /.well-known/oauth-authorization-server
+        alt Discovery Success
+            MS-->>MC: 200 OK + Metadata Document
+            Note over MC: Use endpoints from metadata
+        else Discovery Failed
+            MS-->>MC: 404 Not Found
+            Note over MC: Fall back to default endpoints
+        end
+    end
+
+    alt Client is pre-registered for the identity provider
+    else Identity provider supports dynamic client registration
+        MC->>IDP: Request client registration
+        IDP-->>MC: Confirm client registration
+    else Identity provider does not support dynamic client registration
+        MC->>MS: Request client registration
+        MS->>IDP: Register client
+        IDP-->>MS: Return client registration
+        MS-->>MC: Return client registration
+    end
+
+    Note over MC: Generate PKCE artifacts
+    MC-->>UA: Open /authorize
+    Note over UA: User enters their credentials
+    UA->>MC: Return auth code to client
+    MC->>IDP: Exchange auth code for tokens
+    IDP-->>MC: Return tokens
+    MC->>MC: Cache tokens
+    Note over MC, MS: Begin standard MCP message exchange
+```
 
 #### 2.7.1 Decision Flow Overview
 
-<!-- INSERT MISSING IMAGE -->
+```mermaid
+flowchart TD
+    A[Start Auth Flow] --> AA[Get authority]
+    AA-->B{Check Metadata Discovery}
+    B -->|Available| C[Use Metadata Endpoints]
+    B -->|Not Available| D[Use Default Endpoints]
+
+    C --> G{Check Registration Endpoint}
+    D --> G
+
+    G -->|Available| H[Perform Dynamic Registration]
+    G -->|Not Available| I[Alternative Registration Required]
+
+    H --> J[Start OAuth Flow]
+    I --> J
+
+    J --> K[Generate PKCE Parameters]
+    K --> L[Request Authorization]
+    L --> M[User Authorization]
+    M --> N[Exchange Code for Tokens]
+    N --> O[Use Access Token]
+```
 
 ### 2.8 Access Token Usage
 
@@ -312,21 +424,27 @@ requests. Specifically:
 MCP client **MUST** use the Authorization request header field
 [OAuth Section 5.1.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.1.1):
 
-`Authorization: Bearer <access-token>`
+```
+Authorization: Bearer <access-token>
+```
 
 or DPoP Section 7.1
 
-`Authorization: DPoP <access-token>`  
-`DPoP: <DPoP proof>`
+```
+Authorization: DPoP <access-token>
+DPoP: <DPoP proof>
+```
 
 Note that authorization **MUST** be included in every HTTP request from client to server, even if they 
 are part of the same logical session.
 
 Access tokens **MUST NOT** be included in the URI query string. Example request:
 
-`GET /v1/contexts HTTP/1.1`  
-`Host: mcp.example.com`  
-`Authorization: Bearer eyJhbGciOiJIUzI1NiIs...`
+```
+GET /v1/contexts HTTP/1.1
+Host: mcp.example.com
+Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+```
 
 #### 2.8.2 Token Handling
 
@@ -351,11 +469,11 @@ The following security requirements **MUST** be implemented:
 
 Servers **MUST** return appropriate HTTP status codes for authorization errors:
 
-| Status Code | Description | Usage |
-| ----- | ----- | ----- |
-| 401 | Unauthorized | Authorization required or token invalid |
-| 403 | Forbidden | Invalid scopes or insufficient permissions |
-| 400 | Bad Request | Malformed authorization request |
+| Status Code | Description  | Usage                                      |
+| ----------- | ------------ | ------------------------------------------ |
+| 401         | Unauthorized | Authorization required or token invalid    |
+| 403         | Forbidden    | Invalid scopes or insufficient permissions |
+| 400         | Bad Request  | Malformed authorization request            |
 
 ### 2.11 Implementation Requirements
 
