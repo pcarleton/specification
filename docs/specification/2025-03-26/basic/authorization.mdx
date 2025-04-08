@@ -76,8 +76,9 @@ won't require individual registration per client:server pair.
 
 ### 2.1 Overview
 
-1. Identity providers **MUST** implement OAuth 2.1 with appropriate security measures for both
-   confidential and public clients.
+1. Identity providers **MUST** implement OAuth 2.1 with appropriate security measures
+   (see [RFC9700](https://datatracker.ietf.org/doc/html/rfc9700)) for both confidential and
+   public clients.
 
 2. Identity providers **SHOULD** support the OAuth 2.1 Dynamic Client Registration Protocol
    ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591)).
@@ -109,7 +110,7 @@ document path, following
 [RFC8414](https://datatracker.ietf.org/doc/html/rfc8414#section-3).
 
 An MCP client **MAY** use the `registration_endpoint` to register itself with OAuth Provider. An MCP
-client **MAY** also be pre-registered with certain OAuth Providers.
+client **MAY** also be pre-registered with an OAuth Provider.
 
 An MCP client **MUST** check the `resource` identifier against the hostname of the MCP server. An MCP
 client **MUST** send the `resource` identifier to the OAuth Provider, following
