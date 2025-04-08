@@ -83,8 +83,7 @@ won't require individual registration per client:server pair.
    ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591)).
 
 3. Authorization servers **SHOULD** implement and MCP clients **MUST** consume OAuth 2.0 Authorization
-   Server Metadata ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)). Servers that do not
-   support Authorization Server Metadata **MUST** follow the default URI schema.
+   Server Metadata ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)).
 
 ### 2.2 Client OAuth 2.1 Authorization
 
@@ -172,8 +171,8 @@ additional gestures that are not captured by the specification.
 
 MCP servers **MUST NOT** complete PKCE or other public client flows on behalf of the client.
 
-MCP servers that do not implement a [metadata discovery process](#23-server-metadata-discovery) must
-be assumed to implement the OAuth flow through standard endpoints (e.g., `/authorize` and `/token`)
+MCP servers that **MUST** implement the [metadata discovery process](#23-server-metadata-discovery)
+if they do not use a third-party authorization server.
 
 #### 2.4.2 Flow Description
 
@@ -254,28 +253,6 @@ response, included in the `WWW-Authenticate` header.
 Under all circumstances, the server **MUST** return a `WWW-Authenticate` with `issuer` information,
 even if the server provides its own metadata document that overrides Authorization Server endpoints
 (such as `/authorize`, `/token`, or `/register`).
-
-#### 2.5.2 Fallbacks for Servers without Metadata Discovery
-
-For servers that do not implement OAuth 2.0 Authorization Server Metadata, clients **MUST** use the
-following default endpoint paths relative to the authorization base URL (as defined in
-[Section 2.5.1](#251-discovery-of-server-driven-overrides)):
-
-| Endpoint               | Default Path   | Description                          |
-| ---------------------- | -------------- | ------------------------------------ |
-| Authorization Endpoint | `/authorize`   | Used for authorization requests      |
-| Token Endpoint         | `/token`       | Used for token exchange & refresh    |
-| Registration Endpoint  | `/register`    | Used for dynamic client registration |
-
-For example, with an MCP server hosted at `https://api.example.com/v1/mcp`, the default endpoints
-would be:
-
-- `https://api.example.com/authorize`  
-- `https://api.example.com/token`  
-- `https://api.example.com/register`
-
-Clients **MUST** first attempt to discover endpoints via the metadata document before falling back to
-default paths. When using default paths, all other protocol requirements remain unchanged.
 
 ### 2.6 Dynamic Client Registration
 
