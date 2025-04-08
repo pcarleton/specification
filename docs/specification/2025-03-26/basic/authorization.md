@@ -304,7 +304,7 @@ default paths. When using default paths, all other protocol requirements remain 
 
 ### 2.6 Dynamic Client Registration
 
-MCP clients and servers **SHOULD** support the 
+MCP clients **SHOULD** support the
 [OAuth 2.0 Dynamic Client Registration Protocol](https://datatracker.ietf.org/doc/html/rfc7591) to
 allow MCP clients to obtain OAuth client IDs without user interaction. This provides a standardized
 way for clients to automatically register with new servers, which is crucial for MCP because:
