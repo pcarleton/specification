@@ -259,7 +259,7 @@ When implementing authorization with identity providers, MCP servers **MUST**:
 
 MCP clients **MUST**:
 
-1. Securely store authentication tokens received from the identity provider.  
+1. Securely store Access and Refresh Tokens received from the identity provider.  
 2. Properly handle request to re-authenticate users with expired or invalid tokens.  
 3. Verify that the resource identifier returned matches the FQDN of the MCP server.  
 4. Forward the resource identifier returns as `resource` parameter according to
