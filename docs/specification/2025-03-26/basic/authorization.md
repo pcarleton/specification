@@ -163,8 +163,8 @@ For server capability discovery:
 - MCP servers with partial support for other identity providers or that implement their own
   authentication and authorization logic **SHOULD** follow the OAuth 2.0 Authorization Server Metadata
   protocol.  
-- MCP servers **MUST** respond with a `WWW-Authenticate` header with `issuer`, `scope`, and `resource`
-  identifiers.
+- MCP servers **MUST** respond to an unauthorized request with a `WWW-Authenticate` header containing
+  `issuer`, `scope`, and `resource` identifiers.
 
 The discovery flow is illustrated below:  
 
