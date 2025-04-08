@@ -459,7 +459,11 @@ handling requirements. Invalid or expired tokens **MUST** receive a `HTTP 401` r
 The following security requirements **MUST** be implemented:
 
 1. Clients **MUST** securely store tokens following OAuth 2.1 best practices.  
-1. Servers **MUST** validate all incoming tokens.
+1. Servers **MUST** validate all incoming tokens in one of the three ways:
+  1. Token introspection, according to [RFC 7662](https://datatracker.ietf.org/doc/html/rfc7662).
+     `aud` validation is a **MUST**.
+  1. JWT validation, according to [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html).
+  1. Custom validation, according to the conventions established by the Authorization Server.
 1. All authorization endpoints **MUST** be served over HTTPS.  
 1. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
 1. Redirect URIs **MUST** be either `localhost` URLs or HTTPS URLs.  
