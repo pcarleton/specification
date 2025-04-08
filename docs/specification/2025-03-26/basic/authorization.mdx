@@ -412,7 +412,7 @@ The following security requirements **MUST** be implemented:
   1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
   1. Custom validation, according to the conventions established by the Authorization Server.
 1. All authorization endpoints **MUST** be served over HTTPS.  
-1. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
+1. Authorization servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
 1. Redirect URIs **MUST** be either `localhost` URLs or HTTPS URLs.  
 1. Special considerations **MUST** be accounted for to prevent phishing through MCP servers.
 
