@@ -122,29 +122,7 @@ supported by the OAuth Provider. See
 
 Clients initiate an
 [OAuth 2.1 (draft)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12) authorization
-flow after receiving the *HTTP 401 Unauthorized*.
-
-The following demonstrates the OAuth 2.1 flow for public clients using PKCE for a pre-registered public client.
-
-```mermaid
-sequenceDiagram
-    participant UA as User-Agent (Browser or App/Broker)
-    participant MC as MCP Client
-    participant MS as MCP Server
-    participant IDP as Identity Provider
-
-    MC->>MS: MCP Request
-    MS-->>MC: 401 Unauthorized with issuer, scope, and resource in WWW-Authenticate
-    MC->>MC: Construct OIDC /authorize endpoint from issuer identifier
-    Note over MC: Generate code_verifier and code_challenge,<br/>and request with scope and resource
-    MC-->>UA: Open /authorize
-    UA-->>IDP: User authenticates
-    UA->>MC: Return auth code to client
-    MC->>IDP: Exchange auth code for tokens
-    IDP-->>MC: Return tokens
-    MC->>MC: Store tokens securely
-    Note over MC, MS: Begin standard MCP message exchange
-```
+flow after receiving a *HTTP 401 Unauthorized* response.
 
 ### 2.3 Server Metadata Discovery
 
