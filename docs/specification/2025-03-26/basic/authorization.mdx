@@ -90,7 +90,7 @@ won't require individual registration per client:server pair.
 When authorization is required and not yet proven by the client, servers **MUST** respond with
 *HTTP 401 Unauthorized*.
 
-A *HTTP 401 Unauthorized* response **MUST** include a `WWW-Authenticate` header with information about
+A *HTTP 401 Unauthorized* response **MUST** include a `WWW-Authenticate` header with
 the Authorization Server's issuer URL that the MCP Server is using in the following format:
 
 `WWW-Authenticate: Bearer realm="default", issuer="https://authserver.example",`  
