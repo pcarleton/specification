@@ -23,15 +23,15 @@ This document **does not discuss server-to-server authorization patterns**.
 1. **MCP server developers are not security experts**. The current specification assumes that developers
    will be building their own authorization server. That is not something they ever need to do in the
    context of MCP servers. This also introduces room for serious mistakes that can lead to compromise.
-1. **MCP clients are identity provider (IdP)-agnostic**. We do not and will not expect clients to be
+1. **MCP clients are Authorization Server (AS)-agnostic**. We do not and will not expect clients to be
    "enlightened" in any capacity to support a protected MCP server. This will fragment the ecosystem.
    The specification explicitly assumes that clients are not enabled in any unique way to support
-   specific IdPs.
-    - **Note:** It is acceptable for clients to be enhanced for specific IdPs, primarily through
-      pre-registration.
+   specific Authorization Servers.
+    - **Note:** It is acceptable for clients to be enhanced for specific Authorization Servers,
+      primarily through pre-registration.
 1. **User Authentication is not a MCP Server concern.** The MCP server can guide the client
-   to the IdP but will not be responsible for authenticating the user and obtaining credential
-   artifacts for the user. The server might transform incoming credential artifacts, like tokens, but
+   to the AS but will not be responsible for authenticating the user and obtaining credential
+   artifacts for the user. The MCP server might transform incoming credential artifacts, like tokens, but
    it does not do any kind of exchange for the user in the client, nor does the MCP server have access
    to any user authentication credentials or protocols.
 1. **We focus on OAuth 2.1, with room for extensibility for other providers/specifications.** Our
@@ -64,9 +64,8 @@ selected subset of their features to ensure security and interoperability while 
 - Resource Indicators for OAuth 2.0
   ([RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html))
 
-This specification **DOES NOT** require MCP server developers to implement their own OAuth Provider
-(OP) and instead relies on developers adopting dedicated and well-tested third-party Identity
-Providers (IdPs).
+This specification **DOES NOT** require MCP server developers to implement their own Authorization Server
+and instead relies on developers adopting dedicated and well-tested third-party AS implementations.
 
 This specification also enables existing deployments to leverage their current infrastructure.
 As a side-effect, this also simplifies consent flows, and services that have multiple MCP Servers
@@ -76,14 +75,14 @@ won't require individual registration per client:server pair.
 
 ### 2.1 Overview
 
-1. Identity providers **MUST** implement OAuth 2.1 with appropriate security measures
+1. Authorization servers **MUST** implement OAuth 2.1 with appropriate security measures
    (see [RFC9700](https://datatracker.ietf.org/doc/html/rfc9700)) for both confidential and
    public clients.
 
-2. Identity providers **SHOULD** support the OAuth 2.1 Dynamic Client Registration Protocol
+2. Authorization servers **SHOULD** support the OAuth 2.1 Dynamic Client Registration Protocol
    ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591)).
 
-3. Identity providers **SHOULD** implement and MCP clients **MUST** consume OAuth 2.0 Authorization
+3. Authorization servers **SHOULD** implement and MCP clients **MUST** consume OAuth 2.0 Authorization
    Server Metadata ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)). Servers that do not
    support Authorization Server Metadata **MUST** follow the default URI schema.
 
@@ -95,15 +94,15 @@ When authorization is required and not yet proven by the client, servers **MUST*
 A *HTTP 401 Unauthorized* response **MUST** include a `WWW-Authenticate` header with information about
 the issuer that the server is using to authenticate in the following format:
 
-`WWW-Authenticate: Bearer realm="default", issuer="https://idp.example",`  
+`WWW-Authenticate: Bearer realm="default", issuer="https://authserver.example",`  
 `scope="mcp_access_tool1", resource="https://mcp-server.example"`  
-`WWW-Authenticate: DPoP realm="default", issuer="https://idp.example",`  
+`WWW-Authenticate: DPoP realm="default", issuer="https://authserver.example",`  
 `scope="mcp_access_tool1", resource="https://mcp-server.example",`  
 `algs="ES256 PS256"`
 
 An MCP client **SHOULD** evaluate or permit the user to evaluate the trustworthiness of issuers
 discovered this way (to prevent phishing). For example, an MCP client could prompt the user "Do you
-want to login with `https://idp.example`?"
+want to login with `https://authserver.example`?"
 
 An MCP client **MUST** use the `issuer` identifier to construct the OAuth 2.0 metadata discovery
 document path, following
@@ -133,11 +132,11 @@ For server capability discovery:
 
 - MCP clients **MUST** parse the `WWW-Authenticate` response to discover the issuer URL, and construct
   the metadata endpoint from that issuer identifier.  
-- MCP servers **SHOULD** use a third-party identity provider and include its issuer in
+- MCP servers **SHOULD** use a third-party authorization server and include its issuer in
   *HTTP 401 Unauthorized* responses.  
 - MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of identity
   providers.  
-- Identity providers **MUST** support
+- Authorization Servers **MUST** support
   [OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
 - MCP servers **MUST** respond to an unauthorized request with a `WWW-Authenticate` header containing
   `issuer`, `scope`, and `resource` identifiers.
@@ -148,7 +147,7 @@ The discovery flow is illustrated below:
 sequenceDiagram
     participant MC as MCP Client
     participant MS as MCP Server
-    participant IDP as Identity Provider
+    participant AUTHZS as Authorization Server
 
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
@@ -164,11 +163,11 @@ Metadata Discovery to allow the MCP server to respond based on the MCP protocol 
 
 For example: `MCP-Protocol-Version: 2024-11-05`
 
-### 2.4 Identity provider integration
+### 2.4 Authorization server integration
 
 #### 2.4.1 Overview
 
-MCP servers **MAY** override endpoints on an as-needed basis if the identity provider requires
+MCP servers **MAY** override endpoints on an as-needed basis if the authorization server requires
 additional gestures that are not captured by the specification.
 
 MCP servers **MUST NOT** complete PKCE or other public client flows on behalf of the client.
@@ -184,10 +183,10 @@ The third-party authorization flow comprises these steps:
 1. MCP server responds with *HTTP 401 Unauthorized* and `WWW-Authenticate` header containing the
    `issuer`, `scope`, and `resource`.  
 1. MCP client retrieves the `/authorize` endpoint from the `issuer` metadata document.  
-1. MCP client redirects user to identity provider's `/authorize` endpoint. MCP client uses `scope` and
+1. MCP client redirects user to authorization server's `/authorize` endpoint. MCP client uses `scope` and
    `resource` parameters provided in the `WWW-Authenticate` header in the `/authorize` URL.  
-1. User authorizes with identity provider with `scope` and `resource`.  
-1. Identity provider redirects back to MCP client with authorization code.  
+1. User authorizes with authorization server with `scope` and `resource`.  
+1. Authorization server redirects back to MCP client with authorization code.  
 1. MCP client exchanges the code for the requested tokens.  
 1. MCP client caches the token.  
 1. MCP clients can now request data from the MCP server with the token attached in the `Authorization`
@@ -198,7 +197,7 @@ sequenceDiagram
     participant UA as User-Agent (Browser)
     participant MC as MCP Client
     participant MS as MCP Server
-    participant IDP as Identity Provider
+    participant AUTHZS as Authorization Server
 
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
@@ -206,8 +205,8 @@ sequenceDiagram
     MC-->>UA: Initiate authorization request at /authorize
     Note over UA: User authenticates and authorizes client for scope and resource
     UA->>MC: Return auth code to client
-    MC->>IDP: Exchange code for token
-    IDP-->>MC: Third-party access token
+    MC->>AUTHZS: Exchange code for token
+    AUTHZS-->>MC: Third-party access token
     MC->>MC: Cache token
 ```
 
@@ -223,29 +222,29 @@ MCP servers integrating with third-party authorization services **MUST**:
 
 #### 2.4.4 Security Considerations
 
-When implementing authorization with identity providers, MCP servers **MUST**:
+When implementing authorization with an existing authorization server, MCP servers **MUST**:
 
 1. Request the minimum number of required scopes.  
-2. Securely store any credential artifacts obtained from the client and/or the IdP.  
+2. Securely store any credential artifacts obtained from the client and/or the authorization server.  
 3. Implement appropriate session timeout handling.  
 4. Consider security implications of token chaining.  
 5. Implement proper error handling for third-party auth failures.
 
 MCP clients **MUST**:
 
-1. Securely store Access and Refresh Tokens received from the identity provider.  
+1. Securely store Access and Refresh Tokens received from the authorization server.  
 2. Properly handle request to re-authenticate users with expired or invalid tokens.  
 3. Verify that the resource identifier returned matches the FQDN of the MCP server.  
 4. Forward the resource identifier returns as `resource` parameter according to
    [RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
-Identity providers **MUST**:
+Authorization servers **MUST**:
 
 1. Verify that the resource identifier is registered for the audience of the access token issued.
 
 ### 2.5 Implementing server overrides
 
-In certain scenarios, identity providers might have limited capability support and MCP server
+In certain scenarios, authorization servers might have limited capability support and MCP server
 developers may choose to supplement those with their own implementation. In this scenario, the server
 **MUST** return its fully-qualified domain name as the `issuer` in the *HTTP 401 Unauthorized*
 response, included in the `WWW-Authenticate` header.
@@ -253,14 +252,14 @@ response, included in the `WWW-Authenticate` header.
 #### 2.5.1 Discovery of server-driven overrides
 
 Under all circumstances, the server **MUST** return a `WWW-Authenticate` with `issuer` information,
-even if the server provides its own metadata document that overrides IdP endpoints (such as
-`/authorize`, `/token`, or `/register`).
+even if the server provides its own metadata document that overrides Authorization Server endpoints
+(such as `/authorize`, `/token`, or `/register`).
 
 #### 2.5.2 Fallbacks for Servers without Metadata Discovery
 
 For servers that do not implement OAuth 2.0 Authorization Server Metadata, clients **MUST** use the
 following default endpoint paths relative to the authorization base URL (as defined in
-[Section 2.5.1](#251-discovery-of-server-driven-overrides):
+[Section 2.5.1](#251-discovery-of-server-driven-overrides)):
 
 | Endpoint               | Default Path   | Description                          |
 | ---------------------- | -------------- | ------------------------------------ |
@@ -290,19 +289,19 @@ way for clients to automatically register with new servers, which is crucial for
 - It enables seamless connection to new servers  
 - Servers can implement their own registration policies
 
-MCP clients that want to dynamically register OAuth clients with the target identity provider **MUST**
+MCP clients that want to dynamically register OAuth clients with an authorization server **MUST**
 provide the `software_id` and `software_version` parameters, as defined in the
 [Client Metadata](https://datatracker.ietf.org/doc/html/rfc7591#section-2) section of
 [RFC7591](https://datatracker.ietf.org/doc/html/rfc7591).
 
 MCP clients with mass audiences will *generally* want to pre-register and hardcode client IDs. Some
-OAuth Providers (such as Google and Microsoft) limit the functionality of dynamically registered
+authorization servers (such as Google and Microsoft) limit the functionality of dynamically registered
 clients. An MCP client could contain a config for common issuers like:
 
 ```json
 [
-  { "issuer":"https://idp.example", "client_id":"12345"},
-  { "issuer":"https://idp2.example", "client_id":"urn:client_ids:546"}
+  { "issuer":"https://authserver.example", "client_id":"12345"},
+  { "issuer":"https://authserver2.example", "client_id":"urn:client_ids:546"}
 ]
 ```
 
@@ -318,34 +317,34 @@ sequenceDiagram
     participant UA as User-Agent (Browser or App/Broker)
     participant MC as MCP Client
     participant MS as MCP Server
-    participant IDP as Identity Provider
+    participant AUTHZS as Authorization Server
 
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
     MC->>MC: Construct metadata document path
 
-    alt Supports identity provider
-        MC->>IDP: GET /.well-known/oauth-authorization-server
-        IDP-->>MC: Return endpoint metadata
-    else Partial or No IDP Support
+    alt Supports authorization server
+        MC->>AUTHZS: GET /.well-known/oauth-authorization-server
+        AUTHZS-->>MC: Return endpoint metadata
+    else Partial or No authorization server support
         MC->>MS: GET /.well-known/oauth-authorization-server
-        alt Discovery Success
+        alt Discovery success
             MS-->>MC: 200 OK + Metadata Document
             Note over MC: Use endpoints from metadata
-        else Discovery Failed
+        else Discovery failed
             MS-->>MC: 404 Not Found
             Note over MC: Fall back to default endpoints
         end
     end
 
-    alt Client is pre-registered for the identity provider
-    else Identity provider supports dynamic client registration
-        MC->>IDP: Request client registration
-        IDP-->>MC: Confirm client registration
-    else Identity provider does not support dynamic client registration
+    alt Client is pre-registered with the authorization server
+    else Authorization server supports dynamic client registration
+        MC->>AUTHZS: Request client registration
+        AUTHZS-->>MC: Confirm client registration
+    else Authorization server does not support dynamic client registration
         MC->>MS: Request client registration
-        MS->>IDP: Register client
-        IDP-->>MS: Return client registration
+        MS->>AUTHZS: Register client
+        AUTHZS-->>MS: Return client registration
         MS-->>MC: Return client registration
     end
 
@@ -353,8 +352,8 @@ sequenceDiagram
     MC-->>UA: Initiate authorization call
     Note over UA: User authenticates and authorizes client for scope and resource
     UA->>MC: Return auth code to client
-    MC->>IDP: Exchange auth code for tokens
-    IDP-->>MC: Return tokens
+    MC->>AUTHZS: Exchange auth code for tokens
+    AUTHZS-->>MC: Return tokens
     MC->>MC: Cache tokens
     Note over MC, MS: Begin standard MCP message exchange
 ```
@@ -486,4 +485,4 @@ server, and removes the need for users to obtain client IDs manually.
 
 MCP servers **SHOULD** support delegated authorization through third-party authorization servers
 instead of implementing their own OAuth provider. MCP server **MAY** act as the proxy for
-the identity provider.
+the authorization server.
