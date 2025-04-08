@@ -57,18 +57,22 @@ This authorization mechanism is based on established specifications listed below
 selected subset of their features to ensure security and interoperability while maintaining simplicity:
 
 - [OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12)  
-- OAuth 2.0 Authorization Server Metadata 
+- OAuth 2.0 Authorization Server Metadata
   ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414))  
-- OAuth 2.0 Dynamic Client Registration Protocol 
+- OAuth 2.0 Dynamic Client Registration Protocol
   ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591))  
-- OAuth 2.0 Demonstrating Proof of Possession (DPoP) 
+- OAuth 2.0 Demonstrating Proof of Possession (DPoP)
   ([RFC9449](https://datatracker.ietf.org/doc/html/rfc9449))  
-- Resource Indicators for OAuth 2.0 
+- Resource Indicators for OAuth 2.0
   ([RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html))
 
 This specification **DOES NOT** require MCP server developers to implement their own OAuth Provider
 (OP) and instead relies on developers adopting dedicated and well-tested third-party Identity
 Providers (IdPs).
+
+This specification also enables existing deployments to leverage their current infrastructure.
+As a side-effect, this also simplifies consent flows, and services that have multiple MCP Servers
+won't require individual registration per client:server pair.
 
 ## 2. Authorization Flow
 
