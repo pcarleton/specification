@@ -160,9 +160,8 @@ For server capability discovery:
   *HTTP 401 Unauthorized* responses.  
 - MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of identity
   providers.  
-- MCP servers with partial support for other identity providers or that implement their own
-  authentication and authorization logic **SHOULD** follow the OAuth 2.0 Authorization Server Metadata
-  protocol.  
+- Identity providers **MUST** support
+  [OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
 - MCP servers **MUST** respond to an unauthorized request with a `WWW-Authenticate` header containing
   `issuer`, `scope`, and `resource` identifiers.
 
