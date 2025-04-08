@@ -117,8 +117,8 @@ An MCP client **SHOULD** implement Demonstrating Proof of Possession (DPoP) and 
 supported by the OAuth Provider. See
 [RFC9449](https://datatracker.ietf.org/doc/html/rfc9449).
 
-Clients initiate the
-[OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12) authorization
+Clients initiate an
+[OAuth 2.1 (draft)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12) authorization
 flow after receiving the *HTTP 401 Unauthorized*.
 
 The following demonstrates the OAuth 2.1 flow for public clients using PKCE for a pre-registered public client.
