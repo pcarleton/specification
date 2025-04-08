@@ -126,12 +126,8 @@ flow after receiving a *HTTP 401 Unauthorized* response.
 
 ### 2.3 Server Metadata Discovery
 
-Servers **MUST** return the issuer identifier in `WWW-Authenticate` headers in a
-*HTTP 401 Unauthorized* response.
-
-For servers that are overriding identity provider capabilities, such as those for token exchange or
-dynamic client registration, they **MUST** return their fully-qualified domain as the issuer in
-`WWW-Authenticate` headers in a *HTTP 401 Unauthorized* response.
+Servers **MUST** return the fully-qualified domain name of the issuer in `WWW-Authenticate`
+headers in a *HTTP 401 Unauthorized* response.
 
 For server capability discovery:
 
