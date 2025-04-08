@@ -56,13 +56,13 @@ selected subset of their features to ensure security and interoperability while 
 
 - [OAuth 2.1 IETF DRAFT](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12)  
 - OAuth 2.0 Authorization Server Metadata
-  ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414))  
+  ([RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414))  
 - OAuth 2.0 Dynamic Client Registration Protocol
-  ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591))  
+  ([RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591))  
 - OAuth 2.0 Demonstrating Proof of Possession (DPoP)
-  ([RFC9449](https://datatracker.ietf.org/doc/html/rfc9449))  
+  ([RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449))  
 - Resource Indicators for OAuth 2.0
-  ([RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html))
+  ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html))
 
 This specification **DOES NOT** require MCP server developers to implement their own Authorization Server
 and instead relies on developers adopting dedicated and well-tested third-party AS implementations.
@@ -76,14 +76,14 @@ won't require individual registration per client:server pair.
 ### 2.1 Overview
 
 1. Authorization servers **MUST** implement OAuth 2.1 with appropriate security measures
-   (see [RFC9700](https://datatracker.ietf.org/doc/html/rfc9700)) for both confidential and
+   (see [RFC 9700](https://datatracker.ietf.org/doc/html/rfc9700)) for both confidential and
    public clients.
 
 2. Authorization servers **SHOULD** support the OAuth 2.1 Dynamic Client Registration Protocol
-   ([RFC7591](https://datatracker.ietf.org/doc/html/rfc7591)).
+   ([RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591)).
 
 3. Authorization servers **SHOULD** implement and MCP clients **MUST** consume OAuth 2.0 Authorization
-   Server Metadata ([RFC8414](https://datatracker.ietf.org/doc/html/rfc8414)).
+   Server Metadata ([RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414)).
 
 ### 2.2 Client OAuth 2.1 Authorization
 
@@ -105,18 +105,18 @@ want to login with `https://authserver.example`?"
 
 An MCP client **MUST** use the `issuer` identifier to construct the OAuth 2.0 metadata discovery
 document path, following
-[RFC8414](https://datatracker.ietf.org/doc/html/rfc8414#section-3).
+[RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414#section-3).
 
 An MCP client **MAY** use the `registration_endpoint` to register itself with OAuth Provider. An MCP
 client **MAY** also be pre-registered with an OAuth Provider.
 
 An MCP client **MUST** check the `resource` identifier against the hostname of the MCP server. An MCP
 client **MUST** send the `resource` identifier to the OAuth Provider, following
-[RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html).
+[RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
 An MCP client **SHOULD** implement Demonstrating Proof of Possession (DPoP) and use it to the extent
 supported by the OAuth Provider. See
-[RFC9449](https://datatracker.ietf.org/doc/html/rfc9449).
+[RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449).
 
 Clients initiate an
 [OAuth 2.1 (draft)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12) authorization
@@ -127,7 +127,7 @@ flow after receiving a *HTTP 401 Unauthorized* response.
 MCP servers **MUST** return the fully-qualified domain name of the issuer in `WWW-Authenticate`
 headers in an error respose.
 
-MCP servers **MUST** follow [RFC6750 Section 3.1](https://www.rfc-editor.org/rfc/rfc6750#section-3.1) for
+MCP servers **MUST** follow [RFC 6750 Section 3.1](https://www.rfc-editor.org/rfc/rfc6750#section-3.1) for
 any authorization failures.
 
 For MCP server capability discovery:
@@ -235,10 +235,12 @@ When implementing authorization with an existing authorization server, MCP serve
 MCP clients **MUST**:
 
 1. Securely store Access and Refresh Tokens received from the authorization server.  
-2. Properly handle request to re-authenticate users with expired or invalid tokens.  
+2. Properly handle requests to re-authenticate users with expired or invalid tokens (using the
+   Refresh Token grant) or due to challenges (refer to
+   [RFC 9470](https://www.rfc-editor.org/rfc/rfc9470.html)).
 3. Verify that the resource identifier returned matches the FQDN of the MCP server.  
 4. Forward the resource identifier returns as `resource` parameter according to
-   [RFC8707](https://www.rfc-editor.org/rfc/rfc8707.html).
+   [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
 Authorization servers **MUST**:
 
@@ -272,7 +274,7 @@ way for clients to automatically register with new servers, which is crucial for
 MCP clients that want to dynamically register OAuth clients with an authorization server **MUST**
 provide the `software_id` and `software_version` parameters, as defined in the
 [Client Metadata](https://datatracker.ietf.org/doc/html/rfc7591#section-2) section of
-[RFC7591](https://datatracker.ietf.org/doc/html/rfc7591).
+[RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591).
 
 MCP clients with mass audiences will *generally* want to pre-register and hardcode client IDs. Some
 authorization servers (such as Google and Microsoft) limit the functionality of dynamically registered
@@ -407,7 +409,7 @@ The following security requirements **MUST** be implemented:
 1. Servers **MUST** validate all incoming tokens in one of the three ways:
   1. Token introspection, according to [RFC 7662](https://datatracker.ietf.org/doc/html/rfc7662).
      `aud` validation is a **MUST**.
-  1. JWT validation, according to [RFC9068](https://www.rfc-editor.org/rfc/rfc9068.html).
+  1. JWT validation, according to [RFC 9068](https://www.rfc-editor.org/rfc/rfc9068.html).
   1. Custom validation, according to the conventions established by the Authorization Server.
 1. All authorization endpoints **MUST** be served over HTTPS.  
 1. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
