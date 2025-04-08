@@ -139,7 +139,7 @@ sequenceDiagram
     UA->>MC: Return auth code to client
     MC->>IDP: Exchange auth code for tokens
     IDP-->>MC: Return tokens
-    MC->>MC: Cache tokens
+    MC->>MC: Store tokens securely
     Note over MC, MS: Begin standard MCP message exchange
 ```
 
