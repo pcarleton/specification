@@ -156,7 +156,7 @@ For server capability discovery:
 
 - MCP clients **MUST** parse the `WWW-Authenticate` response to discover the issuer URL, and construct
   the metadata endpoint from that issuer identifier.  
-- MCP servers **MUST** use an established identity provider and include its issuer in
+- MCP servers **SHOULD** use a third-party identity provider and include its issuer in
   *HTTP 401 Unauthorized* responses.  
 - MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of identity
   providers.  
