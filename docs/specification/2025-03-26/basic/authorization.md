@@ -459,7 +459,7 @@ handling requirements. Invalid or expired tokens **MUST** receive a `HTTP 401` r
 
 The following security requirements **MUST** be implemented:
 
-1. Clients **MUST** securely store tokens following OAuth 2.0 best practices.  
+1. Clients **MUST** securely store tokens following OAuth 2.1 best practices.  
 1. Servers **MUST** validate all incoming tokens.
 1. All authorization endpoints **MUST** be served over HTTPS.  
 1. Servers **MUST** validate redirect URIs to prevent open redirect vulnerabilities.  
