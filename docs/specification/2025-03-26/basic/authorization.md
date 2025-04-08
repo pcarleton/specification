@@ -444,9 +444,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
 
 #### 2.8.2 Token Handling
 
-Resource servers **MUST** validate access tokens as described in
-[Section 5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.2). If
-validation fails, servers **MUST** respond according to
+Resource servers (MCP servers _or_ downstream APIs) **MUST** validate access tokens as described
+in [Section 5.2](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.2).
+
+If validation fails, servers **MUST** respond according to
 [Section 5.3](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.3) error
 handling requirements. Invalid or expired tokens **MUST** receive a `HTTP 401` response.
 
