@@ -122,17 +122,20 @@ Clients initiate an
 [OAuth 2.1 (draft)](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12) authorization
 flow after receiving a *HTTP 401 Unauthorized* response.
 
-### 2.3 Server Metadata Discovery
+### 2.3 MCP Server Metadata Discovery
 
-Servers **MUST** return the fully-qualified domain name of the issuer in `WWW-Authenticate`
-headers in a *HTTP 401 Unauthorized* response.
+MCP servers **MUST** return the fully-qualified domain name of the issuer in `WWW-Authenticate`
+headers in an error respose.
 
-For server capability discovery:
+MCP servers **MUST** follow [RFC6750 Section 3.1](https://www.rfc-editor.org/rfc/rfc6750#section-3.1) for
+any authorization failures.
+
+For MCP server capability discovery:
 
 - MCP clients **MUST** parse the `WWW-Authenticate` response to discover the issuer URL, and construct
   the metadata endpoint from that issuer identifier.  
 - MCP servers **SHOULD** use a third-party authorization server and include its issuer in
-  *HTTP 401 Unauthorized* responses.  
+  error responses.  
 - MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of identity
   providers.  
 - Authorization Servers **MUST** support
