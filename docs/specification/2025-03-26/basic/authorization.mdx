@@ -326,7 +326,7 @@ sequenceDiagram
     alt Supports authorization server
         MC->>AUTHZS: GET /.well-known/oauth-authorization-server
         AUTHZS-->>MC: Return endpoint metadata
-    else Partial or No authorization server support
+    else Partial or no authorization server support
         MC->>MS: GET /.well-known/oauth-authorization-server
         alt Discovery success
             MS-->>MC: 200 OK + Metadata Document
@@ -392,7 +392,7 @@ Access token handling **MUST** conform to
 [DPoP Section 7](https://datatracker.ietf.org/doc/html/rfc9449#section-7) requirements for resource
 requests. Specifically:
 
-MCP client **MUST** use the Authorization request header field
+MCP client **MUST** use the `Authorization` request header field and **MUST NOT** use URI query string to transport Tokens
 [OAuth Section 5.1.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.1.1):
 
 ```http
@@ -409,14 +409,6 @@ DPoP: <DPoP proof>
 
 Note that authorization **MUST** be included in every HTTP request from client to server, even if they
 are part of the same logical session.
-
-Access tokens **MUST NOT** be included in the URI query string. Example request:
-
-```http
-GET /v1/contexts HTTP/1.1
-Host: mcp.example.com
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
-```
 
 #### 2.8.2 Token Handling
 
