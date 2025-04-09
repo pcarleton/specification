@@ -210,7 +210,7 @@ sequenceDiagram
     MC->>MS: Request data
     MS-->>MC: 401 Unauthorized with WWW-Authenticate
     Note over MC: MCP Client retrieves authorization endpoint from the issuer metadata document (Section 2.3)
-    MC-->>UA: Initiate authorization request at /authorize
+    MC-->>UA: Initiate authorization request at the authorization endpoint
     Note over UA: User authenticates and authorizes client for scope and resource
     UA->>MC: Return authorization code to client
     MC->>AUTHZS: Exchange code for token
