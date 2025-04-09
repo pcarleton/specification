@@ -241,7 +241,7 @@ MCP clients **MUST**:
    Refresh Token grant) or due to challenges (refer to
    [RFC 9470](https://www.rfc-editor.org/rfc/rfc9470.html)).
 3. Verify that the resource identifier returned matches the FQDN of the MCP server.  
-4. Forward the resource identifier returns as `resource` parameter according to
+4. Forward the resource identifier returned as `resource` parameter according to
    [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
 Authorization servers **MUST**:
@@ -460,5 +460,5 @@ server, and removes the need for users to obtain client IDs manually.
 
 ### 3.4 Using delegated authorization
 
-MCP servers **SHOULD** support delegated authorization through third-party authorization servers
+MCP servers **MAY** support delegated authorization through third-party authorization servers
 instead of implementing their own.
