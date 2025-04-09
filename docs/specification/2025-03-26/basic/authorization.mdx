@@ -101,7 +101,7 @@ response **MUST** follow this format:
 
 ```http
 WWW-Authenticate: DPoP realm="default", issuer="https://authserver.example",
-scope="mcp_access_tool1", resource="https://mcp-server.example",
+scope="mcp:read mcp:write", resource="https://mcp-server.example",
 algs="ES256 PS256"
 ```
 
