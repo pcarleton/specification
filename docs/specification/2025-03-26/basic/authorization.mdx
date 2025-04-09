@@ -191,7 +191,7 @@ The third-party authorization flow comprises these steps:
 1. MCP server responds with *HTTP 401 Unauthorized* and `WWW-Authenticate` header containing the
    `issuer`, `scope`, and `resource`.  
 1. MCP client retrieves the `authorization_endpoint` from the `issuer` metadata document.  
-1. MCP client redirects user to authorization server's `/authorize` endpoint. MCP client uses `scope` and
+1. MCP client redirects user to authorization server's authorization endpoint. MCP client uses `scope` and
    `resource` parameters provided in the `WWW-Authenticate` header in the authorization URL.  
 1. User authorizes with authorization server with `scope` and `resource`.  
 1. Authorization server redirects back to MCP client with authorization code.  
