@@ -140,10 +140,9 @@ For MCP server capability discovery:
 
 - MCP clients **MUST** parse the `WWW-Authenticate` response to discover the issuer URL, and construct
   the metadata endpoint from that issuer identifier.  
-- MCP servers **SHOULD** use an existing authorization server and include its issuer in
-  error responses, rather than implement their own.
-- MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of identity
-  providers.  
+- MCP servers **SHOULD** include the authorization server issuer in error responses.
+- MCP clients **SHOULD** evaluate or enable the user to evaluate the trustworthiness of authorization
+  servers.  
 - Authorization Servers **MUST** support
   [OAuth 2.0 Authorization Server Metadata](https://datatracker.ietf.org/doc/html/rfc8414)
 - MCP servers **MUST** respond to an unauthorized request with a `WWW-Authenticate` header containing
