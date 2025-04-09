@@ -93,7 +93,7 @@ the Authorization Server's issuer URL that the MCP Server is using in the follow
 
 ```http
 WWW-Authenticate: Bearer realm="default", issuer="https://authserver.example",
-scope="mcp_access_tool1", resource="https://mcp-server.example"
+scope="mcp:read mcp:write", resource="https://mcp-server.example"
 ```
 
 If the client supports DPoP and the authorization servers wants to require DPoP, the
