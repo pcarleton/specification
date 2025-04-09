@@ -57,7 +57,7 @@ selected subset of their features to ensure security and interoperability while 
   ([RFC 8414](https://datatracker.ietf.org/doc/html/rfc8414))  
 - OAuth 2.0 Dynamic Client Registration Protocol
   ([RFC 7591](https://datatracker.ietf.org/doc/html/rfc7591))  
-- OAuth 2.0 Demonstrating Proof of Possession (DPoP)
+- OAuth 2.0 Demonstrating Proof of Possession (DPoP) for supporting clients
   ([RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449))  
 - Resource Indicators for OAuth 2.0
   ([RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html))
@@ -91,11 +91,19 @@ When authorization is required and not yet proven by the client, servers **MUST*
 A *HTTP 401 Unauthorized* response **MUST** include a `WWW-Authenticate` header with
 the Authorization Server's issuer URL that the MCP Server is using in the following format:
 
-`WWW-Authenticate: Bearer realm="default", issuer="https://authserver.example",`  
-`scope="mcp_access_tool1", resource="https://mcp-server.example"`  
-`WWW-Authenticate: DPoP realm="default", issuer="https://authserver.example",`  
-`scope="mcp_access_tool1", resource="https://mcp-server.example",`  
-`algs="ES256 PS256"`
+```http
+WWW-Authenticate: Bearer realm="default", issuer="https://authserver.example",
+scope="mcp_access_tool1", resource="https://mcp-server.example"
+```
+
+If the client supports DPoP and the authorization servers wants to require DPoP, the
+response **MUST** follow this format:
+
+```http
+WWW-Authenticate: DPoP realm="default", issuer="https://authserver.example",
+scope="mcp_access_tool1", resource="https://mcp-server.example",
+algs="ES256 PS256"
+```
 
 An MCP client **SHOULD** evaluate or permit the user to evaluate the trustworthiness of issuers
 discovered this way (to prevent phishing). For example, an MCP client could prompt the user "Do you
@@ -112,7 +120,7 @@ An MCP client **MUST** check the `resource` identifier against the hostname of t
 client **MUST** send the `resource` identifier to the OAuth Provider, following
 [RFC 8707](https://www.rfc-editor.org/rfc/rfc8707.html).
 
-An MCP client **SHOULD** implement Demonstrating Proof of Possession (DPoP) and use it to the extent
+An MCP client **MAY** implement Demonstrating Proof of Possession (DPoP) and use it to the extent
 supported by the OAuth Provider. See
 [RFC 9449](https://datatracker.ietf.org/doc/html/rfc9449).
 
@@ -369,8 +377,8 @@ flowchart TD
 
 Access token handling **MUST** conform to
 [OAuth 2.1 Section 5](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5) or
-[DPoP Section 7](https://datatracker.ietf.org/doc/html/rfc9449#section-7) requirements for resource
-requests. Specifically:
+[DPoP Section 7](https://datatracker.ietf.org/doc/html/rfc9449#section-7) (if client
+supports DPoP) requirements for resource requests. Specifically:
 
 MCP client **MUST** use the `Authorization` request header field and **MUST NOT** use URI query string to transport Tokens
 [OAuth Section 5.1.1](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-v2-1-12#section-5.1.1):
@@ -380,7 +388,8 @@ Authorization: Bearer <access-token>
 ```
 
 or
-[DPoP Section 7.1](https://datatracker.ietf.org/doc/html/rfc9449#name-the-dpop-authentication-sch):
+[DPoP Section 7.1](https://datatracker.ietf.org/doc/html/rfc9449#name-the-dpop-authentication-sch)
+(if client supports DPoP):
 
 ```http
 Authorization: DPoP <access-token>
